@@ -1,7 +1,7 @@
 // Colores disponibles
 const colores = ["verde", "rojo", "amarillo", "azul"];
 
-// Frecuencias de sonido (Simon clásico)
+// Frecuencias de cada color
 const frecuencias = {
     verde: 329.63,
     rojo: 261.63,
@@ -14,9 +14,7 @@ let secuencia = [];
 let secuenciaJugador = [];
 let ronda = 0;
 let puedePulsar = false;
-
-// Audio
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let audioContext = null;
 
 // Elementos del HTML
 const botonEmpezar = document.getElementById("empezar");
@@ -26,9 +24,15 @@ const botones = document.querySelectorAll(".boton");
 
 // Cuando se pulsa EMPEZAR
 botonEmpezar.addEventListener("click", () => {
+
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
     if (audioContext.state === "suspended") {
         audioContext.resume();
     }
+
     empezarJuego();
 });
 
@@ -75,6 +79,7 @@ function mostrarSecuencia() {
     let i = 0;
 
     const intervalo = setInterval(() => {
+
         iluminar(secuencia[i]);
         reproducirSonido(secuencia[i]);
 
@@ -86,8 +91,9 @@ function mostrarSecuencia() {
             setTimeout(() => {
                 puedePulsar = true;
                 mensaje.textContent = "Tu turno";
-            }, 300);
+            }, 250);
         }
+
     }, 650);
 }
 
@@ -102,10 +108,13 @@ function iluminar(color) {
 }
 
 function reproducirSonido(color) {
+
+    if (!audioContext) return;
+
     const oscilador = audioContext.createOscillator();
     const ganancia = audioContext.createGain();
 
-    oscilador.type = "sine";
+    oscilador.type = "square";
     oscilador.frequency.value = frecuencias[color];
 
     oscilador.connect(ganancia);
@@ -114,11 +123,11 @@ function reproducirSonido(color) {
     ganancia.gain.setValueAtTime(0.18, audioContext.currentTime);
     ganancia.gain.exponentialRampToValueAtTime(
         0.001,
-        audioContext.currentTime + 0.22
+        audioContext.currentTime + 0.20
     );
 
-    oscilador.start();
-    oscilador.stop(audioContext.currentTime + 0.22);
+    oscilador.start(audioContext.currentTime);
+    oscilador.stop(audioContext.currentTime + 0.20);
 }
 
 function comprobarRespuesta() {
