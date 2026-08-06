@@ -1,11 +1,22 @@
 // Colores disponibles
 const colores = ["verde", "rojo", "amarillo", "azul"];
 
+// Frecuencias de sonido (Simon clásico)
+const frecuencias = {
+    verde: 329.63,
+    rojo: 261.63,
+    amarillo: 220.00,
+    azul: 164.81
+};
+
 // Variables del juego
 let secuencia = [];
 let secuenciaJugador = [];
 let ronda = 0;
 let puedePulsar = false;
+
+// Audio
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 // Elementos del HTML
 const botonEmpezar = document.getElementById("empezar");
@@ -14,7 +25,12 @@ const mensaje = document.getElementById("mensaje");
 const botones = document.querySelectorAll(".boton");
 
 // Cuando se pulsa EMPEZAR
-botonEmpezar.addEventListener("click", empezarJuego);
+botonEmpezar.addEventListener("click", () => {
+    if (audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+    empezarJuego();
+});
 
 // Cuando se pulsa un color
 botones.forEach(boton => {
@@ -22,7 +38,10 @@ botones.forEach(boton => {
         if (!puedePulsar) return;
 
         const color = boton.dataset.color;
+
         iluminar(color);
+        reproducirSonido(color);
+
         secuenciaJugador.push(color);
         comprobarRespuesta();
     });
@@ -32,22 +51,23 @@ function empezarJuego() {
     secuencia = [];
     secuenciaJugador = [];
     ronda = 0;
+
     botonEmpezar.disabled = true;
     mensaje.textContent = "Observa la secuencia...";
+
     siguienteRonda();
 }
 
 function siguienteRonda() {
     puedePulsar = false;
     secuenciaJugador = [];
+
     ronda++;
     textoRonda.textContent = ronda;
 
-    // Añadir un color aleatorio a la secuencia
-    const colorAleatorio = colores[Math.floor(Math.random() * 4)];
+    const colorAleatorio = colores[Math.floor(Math.random() * colores.length)];
     secuencia.push(colorAleatorio);
 
-    // Mostrar la secuencia
     mostrarSecuencia();
 }
 
@@ -56,29 +76,54 @@ function mostrarSecuencia() {
 
     const intervalo = setInterval(() => {
         iluminar(secuencia[i]);
+        reproducirSonido(secuencia[i]);
+
         i++;
 
         if (i >= secuencia.length) {
             clearInterval(intervalo);
-            puedePulsar = true;
-            mensaje.textContent = "Tu turno";
+
+            setTimeout(() => {
+                puedePulsar = true;
+                mensaje.textContent = "Tu turno";
+            }, 300);
         }
-    }, 800);
+    }, 650);
 }
 
 function iluminar(color) {
     const boton = document.getElementById(color);
+
     boton.classList.add("activo");
 
     setTimeout(() => {
         boton.classList.remove("activo");
-    }, 400);
+    }, 300);
+}
+
+function reproducirSonido(color) {
+    const oscilador = audioContext.createOscillator();
+    const ganancia = audioContext.createGain();
+
+    oscilador.type = "sine";
+    oscilador.frequency.value = frecuencias[color];
+
+    oscilador.connect(ganancia);
+    ganancia.connect(audioContext.destination);
+
+    ganancia.gain.setValueAtTime(0.18, audioContext.currentTime);
+    ganancia.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + 0.22
+    );
+
+    oscilador.start();
+    oscilador.stop(audioContext.currentTime + 0.22);
 }
 
 function comprobarRespuesta() {
     const posicion = secuenciaJugador.length - 1;
 
-    // Si el jugador se equivoca
     if (secuenciaJugador[posicion] !== secuencia[posicion]) {
         mensaje.textContent = "¡Fallaste! Ronda: " + ronda;
         botonEmpezar.disabled = false;
@@ -87,13 +132,12 @@ function comprobarRespuesta() {
         return;
     }
 
-    // Si el jugador acertó toda la secuencia
     if (secuenciaJugador.length === secuencia.length) {
         mensaje.textContent = "¡Bien! Siguiente ronda...";
         puedePulsar = false;
 
         setTimeout(() => {
             siguienteRonda();
-        }, 1000);
+        }, 800);
     }
 }
