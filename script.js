@@ -1,5 +1,7 @@
 // ========== VARIABLES GLOBALES ==========
-let modo = "facil"; // "facil" o "dificil"
+let modo = "facil";          // "facil" o "dificil"
+let numJugadores = 1;        // 1 o 2
+let jugadorActual = 1;       // 1 o 2
 let secuencia = [];
 let secuenciaJugador = [];
 let ronda = 0;
@@ -24,23 +26,30 @@ const frecuencias = {
 // ========== ELEMENTOS DEL DOM ==========
 const pantallaInicio = document.getElementById("pantalla-inicio");
 const pantallaDificultad = document.getElementById("pantalla-dificultad");
+const pantallaJugadores = document.getElementById("pantalla-jugadores");
 const pantallaJuego = document.getElementById("pantalla-juego");
 
 const btnComenzar = document.getElementById("btn-comenzar");
 const btnFacil = document.getElementById("btn-facil");
 const btnDificil = document.getElementById("btn-dificil");
 const btnVolver = document.getElementById("btn-volver");
+const btn1Jugador = document.getElementById("btn-1jugador");
+const btn2Jugadores = document.getElementById("btn-2jugadores");
+const btnVolverJugadores = document.getElementById("btn-volver-jugadores");
 const btnMenu = document.getElementById("btn-menu");
 
 const botonEmpezar = document.getElementById("empezar");
 const textoRonda = document.getElementById("ronda");
 const textoRecord = document.getElementById("record");
+const textoTurno = document.getElementById("texto-turno");
+const textoJugadorActual = document.getElementById("jugador-actual");
+const textoRecordContainer = document.getElementById("texto-record");
 const mensaje = document.getElementById("mensaje");
 
 const tableroFacil = document.getElementById("tablero-facil");
 const tableroDificil = document.getElementById("tablero-dificil");
 
-// ========== RÉCORD (localStorage) ==========
+// ========== RÉCORD (solo 1 jugador) ==========
 function getRecordKey() {
     return "simon-record-" + modo;
 }
@@ -52,6 +61,7 @@ function cargarRecord() {
 }
 
 function guardarRecordSiMejor(rondaActual) {
+    if (numJugadores === 2) return false;
     const actual = cargarRecord();
     if (rondaActual > actual) {
         localStorage.setItem(getRecordKey(), rondaActual);
@@ -61,7 +71,7 @@ function guardarRecordSiMejor(rondaActual) {
     return false;
 }
 
-// ========== NAVEGACIÓN ENTRE PANTALLAS ==========
+// ========== NAVEGACIÓN ==========
 btnComenzar.addEventListener("click", () => {
     pantallaInicio.classList.add("oculta");
     pantallaDificultad.classList.remove("oculta");
@@ -73,11 +83,30 @@ btnVolver.addEventListener("click", () => {
 });
 
 btnFacil.addEventListener("click", () => {
-    iniciarModo("facil");
+    modo = "facil";
+    numJugadores = 1;
+    iniciarJuego();
 });
 
 btnDificil.addEventListener("click", () => {
-    iniciarModo("dificil");
+    modo = "dificil";
+    pantallaDificultad.classList.add("oculta");
+    pantallaJugadores.classList.remove("oculta");
+});
+
+btnVolverJugadores.addEventListener("click", () => {
+    pantallaJugadores.classList.add("oculta");
+    pantallaDificultad.classList.remove("oculta");
+});
+
+btn1Jugador.addEventListener("click", () => {
+    numJugadores = 1;
+    iniciarJuego();
+});
+
+btn2Jugadores.addEventListener("click", () => {
+    numJugadores = 2;
+    iniciarJuego();
 });
 
 btnMenu.addEventListener("click", () => {
@@ -86,9 +115,7 @@ btnMenu.addEventListener("click", () => {
     pantallaInicio.classList.remove("oculta");
 });
 
-function iniciarModo(dificultad) {
-    modo = dificultad;
-
+function iniciarJuego() {
     if (modo === "facil") {
         tableroFacil.classList.remove("oculta");
         tableroDificil.classList.add("oculta");
@@ -97,11 +124,22 @@ function iniciarModo(dificultad) {
         tableroDificil.classList.remove("oculta");
     }
 
+    if (numJugadores === 2) {
+        textoTurno.classList.remove("oculta");
+        textoRecordContainer.classList.add("oculta");
+        jugadorActual = 1;
+        textoJugadorActual.textContent = "1";
+    } else {
+        textoTurno.classList.add("oculta");
+        textoRecordContainer.classList.remove("oculta");
+        cargarRecord();
+    }
+
     pantallaDificultad.classList.add("oculta");
+    pantallaJugadores.classList.add("oculta");
     pantallaJuego.classList.remove("oculta");
 
     resetearJuego();
-    cargarRecord();
     mensaje.textContent = "Pulsa EMPEZAR para jugar";
     botonEmpezar.disabled = false;
     botonEmpezar.textContent = "EMPEZAR";
@@ -136,12 +174,16 @@ function resetearJuego() {
     ronda = 0;
     puedePulsar = false;
     textoRonda.textContent = "0";
+    jugadorActual = 1;
+    if (textoJugadorActual) textoJugadorActual.textContent = "1";
 }
 
 function empezarJuego() {
     secuencia = [];
     secuenciaJugador = [];
     ronda = 0;
+    jugadorActual = 1;
+    if (textoJugadorActual) textoJugadorActual.textContent = "1";
 
     botonEmpezar.disabled = true;
     mensaje.textContent = "Observa la secuencia...";
@@ -176,7 +218,11 @@ function mostrarSecuencia() {
             clearInterval(intervalo);
             setTimeout(() => {
                 puedePulsar = true;
-                mensaje.textContent = "Tu turno";
+                if (numJugadores === 2) {
+                    mensaje.textContent = "Jugador " + jugadorActual + " · Tu turno";
+                } else {
+                    mensaje.textContent = "Tu turno";
+                }
             }, 250);
         }
     }, 650);
@@ -226,25 +272,40 @@ function reproducirSonido(color) {
 function comprobarRespuesta() {
     const posicion = secuenciaJugador.length - 1;
 
+    // Fallo
     if (secuenciaJugador[posicion] !== secuencia[posicion]) {
-        const esNuevoRecord = guardarRecordSiMejor(ronda);
-        if (esNuevoRecord) {
-            mensaje.textContent = "¡Nuevo récord! Ronda: " + ronda;
-        } else {
-            mensaje.textContent = "¡Fallaste! Ronda: " + ronda;
-        }
+        puedePulsar = false;
         botonEmpezar.disabled = false;
         botonEmpezar.textContent = "REINTENTAR";
-        puedePulsar = false;
+
+        if (numJugadores === 2) {
+            const ganador = jugadorActual === 1 ? 2 : 1;
+            mensaje.textContent = "¡Jugador " + ganador + " gana! (Ronda " + ronda + ")";
+        } else {
+            const esNuevoRecord = guardarRecordSiMejor(ronda);
+            if (esNuevoRecord) {
+                mensaje.textContent = "¡Nuevo récord! Ronda: " + ronda;
+            } else {
+                mensaje.textContent = "¡Fallaste! Ronda: " + ronda;
+            }
+        }
         return;
     }
 
+    // Acertó toda la secuencia
     if (secuenciaJugador.length === secuencia.length) {
-        mensaje.textContent = "¡Bien! Siguiente ronda...";
         puedePulsar = false;
+
+        if (numJugadores === 2) {
+            jugadorActual = jugadorActual === 1 ? 2 : 1;
+            textoJugadorActual.textContent = jugadorActual;
+            mensaje.textContent = "¡Bien! Turno del Jugador " + jugadorActual + "...";
+        } else {
+            mensaje.textContent = "¡Bien! Siguiente ronda...";
+        }
 
         setTimeout(() => {
             siguienteRonda();
-        }, 800);
+        }, 900);
     }
 }
