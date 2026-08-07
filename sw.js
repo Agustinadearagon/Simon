@@ -1,4 +1,4 @@
-const CACHE_NAME = "simon-v6";
+const CACHE_NAME = "simon-v7";
 
 // Archivos principales del juego
 const FILES_TO_CACHE = [
