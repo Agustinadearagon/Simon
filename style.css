@@ -160,15 +160,15 @@ body {
 }
 
 h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
+    font-size: 2.4rem;
+    margin-bottom: 12px;
     letter-spacing: 8px;
     color: #eee;
 }
 
 .info {
-    margin-bottom: 30px;
-    font-size: 1.2rem;
+    margin-bottom: 18px;
+    font-size: 1.1rem;
 }
 
 #mensaje {
@@ -212,11 +212,11 @@ h1 {
     box-shadow: 0 0 25px rgba(255,255,255,0.4);
 }
 
-/* --- Tablero 6 colores (Difícil) - estilo Super Simon --- */
+/* --- Tablero 6 colores (Difícil) --- */
 .tablero-hex {
-    width: 300px;
-    height: 300px;
-    margin: 0 auto 30px;
+    width: 360px;
+    height: 360px;
+    margin: 0 auto 25px;
     position: relative;
     border-radius: 50%;
     background: #0d0d12;
@@ -226,21 +226,20 @@ h1 {
         0 10px 35px rgba(0,0,0,0.7);
 }
 
-/* Cada botón se centra y se gira desde el centro del tablero */
 .boton-hex {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 78px;
-    height: 58px;
-    margin-left: -39px;
-    margin-top: -29px;
-    border-radius: 12px;
+    width: 96px;
+    height: 72px;
+    margin-left: -48px;
+    margin-top: -36px;
+    border-radius: 14px;
     cursor: pointer;
     transition: filter 0.15s, box-shadow 0.15s;
     border: 3px solid rgba(0,0,0,0.4);
     box-shadow: inset 0 -3px 6px rgba(0,0,0,0.35);
-    transform: rotate(var(--angulo)) translateY(-105px) rotate(calc(var(--angulo) * -1));
+    transform: rotate(var(--angulo)) translateY(-125px) rotate(calc(var(--angulo) * -1));
 }
 
 .boton-hex:active {
@@ -252,7 +251,6 @@ h1 {
     box-shadow: 0 0 26px rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.2);
 }
 
-/* Ángulos cada 60° (empezando arriba = 0°) */
 .boton-hex.amarillo { background: #ffd600; --angulo: 0deg; }
 .boton-hex.azul     { background: #2962ff; --angulo: 60deg; }
 .boton-hex.verde    { background: #00c853; --angulo: 120deg; }
@@ -262,8 +260,8 @@ h1 {
 
 .centro-hex {
     position: absolute;
-    width: 70px;
-    height: 70px;
+    width: 85px;
+    height: 85px;
     background: #0a0a0f;
     border-radius: 50%;
     top: 50%;
@@ -308,24 +306,70 @@ h1 {
         height: 280px;
     }
     .tablero-hex {
-        width: 270px;
-        height: 270px;
+        width: 320px;
+        height: 320px;
     }
     .boton-hex {
-        width: 70px;
-        height: 52px;
-        margin-left: -35px;
-        margin-top: -26px;
-        transform: rotate(var(--angulo)) translateY(-94px) rotate(calc(var(--angulo) * -1));
+        width: 84px;
+        height: 62px;
+        margin-left: -42px;
+        margin-top: -31px;
+        transform: rotate(var(--angulo)) translateY(-110px) rotate(calc(var(--angulo) * -1));
     }
     .centro-hex {
-        width: 62px;
-        height: 62px;
+        width: 74px;
+        height: 74px;
     }
     .titulo-inicio {
         font-size: 2.6rem;
     }
     .instrucciones {
         padding: 18px 20px;
+    }
+}
+
+/* ========== MODO MULTIJUGADOR: tablero más grande ========== */
+.modo-multijugador h1 {
+    display: none;
+}
+
+.modo-multijugador .tablero-hex {
+    width: 380px;
+    height: 380px;
+    margin: 10px auto 20px;
+}
+
+.modo-multijugador .boton-hex {
+    width: 102px;
+    height: 76px;
+    margin-left: -51px;
+    margin-top: -38px;
+    transform: rotate(var(--angulo)) translateY(-132px) rotate(calc(var(--angulo) * -1));
+}
+
+.modo-multijugador .centro-hex {
+    width: 90px;
+    height: 90px;
+}
+
+.modo-multijugador .info {
+    margin-bottom: 12px;
+}
+
+@media (max-width: 400px) {
+    .modo-multijugador .tablero-hex {
+        width: 340px;
+        height: 340px;
+    }
+    .modo-multijugador .boton-hex {
+        width: 90px;
+        height: 66px;
+        margin-left: -45px;
+        margin-top: -33px;
+        transform: rotate(var(--angulo)) translateY(-118px) rotate(calc(var(--angulo) * -1));
+    }
+    .modo-multijugador .centro-hex {
+        width: 78px;
+        height: 78px;
     }
 }
