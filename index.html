@@ -7,22 +7,82 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>SIMON</h1>
-        
-        <div class="info">
-            <p>Ronda: <span id="ronda">0</span></p>
-            <p id="mensaje">Pulsa EMPEZAR para jugar</p>
-        </div>
 
-        <div class="tablero">
-            <div class="boton verde" id="verde" data-color="verde"></div>
-            <div class="boton rojo" id="rojo" data-color="rojo"></div>
-            <div class="boton amarillo" id="amarillo" data-color="amarillo"></div>
-            <div class="boton azul" id="azul" data-color="azul"></div>
-        </div>
+    <!-- ========== PANTALLA DE INICIO (Instrucciones) ========== -->
+    <div id="pantalla-inicio" class="pantalla">
+        <div class="container-inicio">
+            <h1 class="titulo-inicio">SIMON</h1>
+            <p class="subtitulo">El clásico juego de memoria</p>
 
-        <button id="empezar">EMPEZAR</button>
+            <div class="instrucciones">
+                <h2>Cómo jugar</h2>
+                <ol>
+                    <li>El juego muestra una secuencia de colores con sonido.</li>
+                    <li>Debes repetir la secuencia en el mismo orden.</li>
+                    <li>Cada ronda añade un color más a la secuencia.</li>
+                    <li>Si fallas, se acaba la partida y verás tu puntuación.</li>
+                    <li>¡Intenta llegar lo más lejos posible!</li>
+                </ol>
+            </div>
+
+            <button id="btn-comenzar" class="btn-principal">COMENZAR</button>
+        </div>
+    </div>
+
+    <!-- ========== PANTALLA DE DIFICULTAD ========== -->
+    <div id="pantalla-dificultad" class="pantalla oculta">
+        <div class="container-inicio">
+            <h1 class="titulo-inicio">Dificultad</h1>
+            <p class="subtitulo">Elige el modo de juego</p>
+
+            <div class="opciones-dificultad">
+                <button id="btn-facil" class="btn-dificultad">
+                    <span class="modo-titulo">FÁCIL</span>
+                    <span class="modo-desc">4 colores · Clásico</span>
+                </button>
+
+                <button id="btn-dificil" class="btn-dificultad btn-dificil">
+                    <span class="modo-titulo">DIFÍCIL</span>
+                    <span class="modo-desc">6 colores · Super Simon</span>
+                </button>
+            </div>
+
+            <button id="btn-volver" class="btn-secundario">← Volver</button>
+        </div>
+    </div>
+
+    <!-- ========== PANTALLA DE JUEGO ========== -->
+    <div id="pantalla-juego" class="pantalla oculta">
+        <div class="container">
+            <h1>SIMON</h1>
+            
+            <div class="info">
+                <p>Ronda: <span id="ronda">0</span></p>
+                <p id="mensaje">Pulsa EMPEZAR para jugar</p>
+            </div>
+
+            <!-- Tablero 4 colores (Fácil) -->
+            <div id="tablero-facil" class="tablero">
+                <div class="boton verde" id="verde" data-color="verde"></div>
+                <div class="boton rojo" id="rojo" data-color="rojo"></div>
+                <div class="boton amarillo" id="amarillo" data-color="amarillo"></div>
+                <div class="boton azul" id="azul" data-color="azul"></div>
+            </div>
+
+            <!-- Tablero 6 colores (Difícil) - estilo Super Simon -->
+            <div id="tablero-dificil" class="tablero-hex oculta">
+                <div class="boton-hex magenta" id="magenta" data-color="magenta"></div>
+                <div class="boton-hex amarillo" id="amarillo6" data-color="amarillo"></div>
+                <div class="boton-hex azul" id="azul6" data-color="azul"></div>
+                <div class="boton-hex verde" id="verde6" data-color="verde"></div>
+                <div class="boton-hex naranja" id="naranja" data-color="naranja"></div>
+                <div class="boton-hex morado" id="morado" data-color="morado"></div>
+                <div class="centro-hex"></div>
+            </div>
+
+            <button id="empezar">EMPEZAR</button>
+            <button id="btn-menu" class="btn-secundario" style="margin-top: 15px;">Menú principal</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
