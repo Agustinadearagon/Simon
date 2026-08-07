@@ -1,16 +1,18 @@
 // ========== VARIABLES GLOBALES ==========
-let modo = "facil";
-let numJugadores = 1;
-let jugadorActual = 1;
+let modo = "facil";          // "facil" o "dificil"
+let numJugadores = 1;        // 1 o 2
+let jugadorActual = 1;       // 1 o 2
 let secuencia = [];
 let secuenciaJugador = [];
 let ronda = 0;
 let puedePulsar = false;
 let audioContext = null;
 
+// Colores según modo
 const coloresFacil = ["verde", "rojo", "amarillo", "azul"];
 const coloresDificil = ["magenta", "amarillo", "azul", "verde", "naranja", "morado"];
 
+// Frecuencias de cada color
 const frecuencias = {
     verde: 329.63,
     rojo: 261.63,
@@ -47,7 +49,7 @@ const mensaje = document.getElementById("mensaje");
 const tableroFacil = document.getElementById("tablero-facil");
 const tableroDificil = document.getElementById("tablero-dificil");
 
-// ========== RÉCORD ==========
+// ========== RÉCORD (solo 1 jugador) ==========
 function getRecordKey() {
     return "simon-record-" + modo;
 }
@@ -159,6 +161,7 @@ botonEmpezar.addEventListener("click", () => {
 document.querySelectorAll(".boton, .boton-hex").forEach(boton => {
     boton.addEventListener("click", () => {
         if (!puedePulsar) return;
+
         const color = boton.dataset.color;
         iluminar(color);
         reproducirSonido(color);
@@ -183,28 +186,36 @@ function empezarJuego() {
     ronda = 0;
     jugadorActual = 1;
     if (textoJugadorActual) textoJugadorActual.textContent = "1";
+
     botonEmpezar.disabled = true;
     mensaje.textContent = "Observa la secuencia...";
+
     siguienteRonda();
 }
 
 function siguienteRonda() {
     puedePulsar = false;
     secuenciaJugador = [];
+
     ronda++;
     textoRonda.textContent = ronda;
+
     const colores = modo === "facil" ? coloresFacil : coloresDificil;
     const colorAleatorio = colores[Math.floor(Math.random() * colores.length)];
     secuencia.push(colorAleatorio);
+
     mostrarSecuencia();
 }
 
 function mostrarSecuencia() {
     let i = 0;
+
     const intervalo = setInterval(() => {
         iluminar(secuencia[i]);
         reproducirSonido(secuencia[i]);
+
         i++;
+
         if (i >= secuencia.length) {
             clearInterval(intervalo);
             setTimeout(() => {
@@ -214,9 +225,9 @@ function mostrarSecuencia() {
                 } else {
                     mensaje.textContent = "Tu turno";
                 }
-            }, 250);
+            }, 150);
         }
-    }, 650);
+    }, 500);
 }
 
 function iluminar(color) {
@@ -229,21 +240,33 @@ function iluminar(color) {
         else if (color === "verde") boton = document.getElementById("verde6");
         else boton = document.getElementById(color);
     }
+
     if (!boton) return;
+
     boton.classList.add("activo");
-    setTimeout(() => boton.classList.remove("activo"), 300);
+    setTimeout(() => {
+        boton.classList.remove("activo");
+    }, 250);
 }
 
 function reproducirSonido(color) {
     if (!audioContext) return;
+
     const oscilador = audioContext.createOscillator();
     const ganancia = audioContext.createGain();
+
     oscilador.type = "square";
     oscilador.frequency.value = frecuencias[color] || 220;
+
     oscilador.connect(ganancia);
     ganancia.connect(audioContext.destination);
+
     ganancia.gain.setValueAtTime(0.18, audioContext.currentTime);
-    ganancia.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.20);
+    ganancia.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + 0.20
+    );
+
     oscilador.start(audioContext.currentTime);
     oscilador.stop(audioContext.currentTime + 0.20);
 }
@@ -251,6 +274,7 @@ function reproducirSonido(color) {
 function comprobarRespuesta() {
     const posicion = secuenciaJugador.length - 1;
 
+    // Fallo
     if (secuenciaJugador[posicion] !== secuencia[posicion]) {
         puedePulsar = false;
         botonEmpezar.disabled = false;
@@ -261,15 +285,19 @@ function comprobarRespuesta() {
             mensaje.textContent = "¡Jugador " + ganador + " gana! (Ronda " + ronda + ")";
         } else {
             const esNuevoRecord = guardarRecordSiMejor(ronda);
-            mensaje.textContent = esNuevoRecord
-                ? "¡Nuevo récord! Ronda: " + ronda
-                : "¡Fallaste! Ronda: " + ronda;
+            if (esNuevoRecord) {
+                mensaje.textContent = "¡Nuevo récord! Ronda: " + ronda;
+            } else {
+                mensaje.textContent = "¡Fallaste! Ronda: " + ronda;
+            }
         }
         return;
     }
 
+    // Acertó toda la secuencia
     if (secuenciaJugador.length === secuencia.length) {
         puedePulsar = false;
+
         if (numJugadores === 2) {
             jugadorActual = jugadorActual === 1 ? 2 : 1;
             textoJugadorActual.textContent = jugadorActual;
@@ -277,6 +305,9 @@ function comprobarRespuesta() {
         } else {
             mensaje.textContent = "¡Bien! Siguiente ronda...";
         }
-        setTimeout(() => siguienteRonda(), 900);
+
+        setTimeout(() => {
+            siguienteRonda();
+        }, 600);
     }
 }
