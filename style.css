@@ -14,6 +14,147 @@ body {
     color: white;
 }
 
+.pantalla {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.oculta {
+    display: none !important;
+}
+
+/* ========== PANTALLA INICIO / DIFICULTAD ========== */
+.container-inicio {
+    text-align: center;
+    max-width: 420px;
+    width: 100%;
+}
+
+.titulo-inicio {
+    font-size: 3.2rem;
+    letter-spacing: 10px;
+    color: #eee;
+    margin-bottom: 8px;
+}
+
+.subtitulo {
+    color: #aaa;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.instrucciones {
+    background: #16213e;
+    border-radius: 16px;
+    padding: 24px 28px;
+    text-align: left;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.instrucciones h2 {
+    color: #ffd600;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.instrucciones ol {
+    padding-left: 20px;
+    line-height: 1.7;
+    color: #ddd;
+    font-size: 1rem;
+}
+
+.instrucciones li {
+    margin-bottom: 10px;
+}
+
+.btn-principal {
+    background: #e94560;
+    color: white;
+    border: none;
+    padding: 16px 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+    max-width: 320px;
+}
+
+.btn-principal:hover {
+    background: #ff6b81;
+}
+
+.btn-principal:active {
+    transform: scale(0.97);
+}
+
+.opciones-dificultad {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.btn-dificultad {
+    background: #16213e;
+    border: 2px solid #2a3a5e;
+    color: white;
+    padding: 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.btn-dificultad:hover {
+    border-color: #e94560;
+    background: #1e2a4a;
+    transform: translateY(-2px);
+}
+
+.btn-dificultad.btn-dificil:hover {
+    border-color: #ffd600;
+}
+
+.modo-titulo {
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.modo-desc {
+    font-size: 0.95rem;
+    color: #aaa;
+}
+
+.btn-secundario {
+    background: transparent;
+    color: #aaa;
+    border: 1px solid #444;
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secundario:hover {
+    color: white;
+    border-color: #888;
+}
+
+/* ========== PANTALLA DE JUEGO ========== */
 .container {
     text-align: center;
 }
@@ -35,6 +176,7 @@ h1 {
     color: #aaa;
 }
 
+/* --- Tablero 4 colores (Fácil) --- */
 .tablero {
     width: 320px;
     height: 320px;
@@ -60,25 +202,104 @@ h1 {
     transform: scale(0.96);
 }
 
-.verde {
-    background: #00c853;
-}
-
-.rojo {
-    background: #d50000;
-}
-
-.amarillo {
-    background: #ffd600;
-}
-
-.azul {
-    background: #2962ff;
-}
+.verde { background: #00c853; }
+.rojo { background: #d50000; }
+.amarillo { background: #ffd600; }
+.azul { background: #2962ff; }
 
 .boton.activo {
     filter: brightness(1.6);
     box-shadow: 0 0 25px rgba(255,255,255,0.4);
+}
+
+/* --- Tablero 6 colores (Difícil) - estilo Super Simon --- */
+.tablero-hex {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto 30px;
+    position: relative;
+    border-radius: 50%;
+    background: #111;
+    box-shadow: 
+        0 0 0 10px #1a1a2e,
+        0 0 0 14px #2a2a3e,
+        0 12px 40px rgba(0,0,0,0.7);
+}
+
+.boton-hex {
+    position: absolute;
+    width: 30%;
+    height: 23%;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: filter 0.15s, box-shadow 0.15s;
+    border: 3px solid rgba(0,0,0,0.35);
+    box-shadow: inset 0 -4px 8px rgba(0,0,0,0.3);
+}
+
+.boton-hex:active {
+    filter: brightness(0.9);
+}
+
+.boton-hex.activo {
+    filter: brightness(1.75);
+    box-shadow: 0 0 28px rgba(255,255,255,0.55), inset 0 -4px 8px rgba(0,0,0,0.2);
+}
+
+/* Posiciones en círculo (6 segmentos estilo Super Simon) */
+.boton-hex.magenta {
+    background: #c51162;
+    top: 6%;
+    left: 6%;
+    transform: rotate(-35deg);
+}
+
+.boton-hex.amarillo {
+    background: #ffd600;
+    top: 3%;
+    left: 35%;
+}
+
+.boton-hex.azul {
+    background: #2962ff;
+    top: 6%;
+    right: 6%;
+    transform: rotate(35deg);
+}
+
+.boton-hex.verde {
+    background: #00c853;
+    bottom: 15%;
+    right: 6%;
+    transform: rotate(-35deg);
+}
+
+.boton-hex.naranja {
+    background: #ff6d00;
+    bottom: 4%;
+    left: 35%;
+}
+
+.boton-hex.morado {
+    background: #6200ea;
+    bottom: 15%;
+    left: 6%;
+    transform: rotate(35deg);
+}
+
+.centro-hex {
+    position: absolute;
+    width: 26%;
+    height: 26%;
+    background: #0a0a0f;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 5px solid #1a1a2e;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+    z-index: 2;
+    pointer-events: none;
 }
 
 #empezar {
@@ -105,4 +326,22 @@ h1 {
 #empezar:disabled {
     background: #555;
     cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+    .tablero {
+        width: 280px;
+        height: 280px;
+    }
+    .tablero-hex {
+        width: 270px;
+        height: 270px;
+    }
+    .titulo-inicio {
+        font-size: 2.6rem;
+    }
+    .instrucciones {
+        padding: 18px 20px;
+    }
 }
