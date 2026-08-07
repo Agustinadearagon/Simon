@@ -34,10 +34,32 @@ const btnMenu = document.getElementById("btn-menu");
 
 const botonEmpezar = document.getElementById("empezar");
 const textoRonda = document.getElementById("ronda");
+const textoRecord = document.getElementById("record");
 const mensaje = document.getElementById("mensaje");
 
 const tableroFacil = document.getElementById("tablero-facil");
 const tableroDificil = document.getElementById("tablero-dificil");
+
+// ========== RÉCORD (localStorage) ==========
+function getRecordKey() {
+    return "simon-record-" + modo;
+}
+
+function cargarRecord() {
+    const valor = parseInt(localStorage.getItem(getRecordKey()) || "0", 10);
+    textoRecord.textContent = valor;
+    return valor;
+}
+
+function guardarRecordSiMejor(rondaActual) {
+    const actual = cargarRecord();
+    if (rondaActual > actual) {
+        localStorage.setItem(getRecordKey(), rondaActual);
+        textoRecord.textContent = rondaActual;
+        return true;
+    }
+    return false;
+}
 
 // ========== NAVEGACIÓN ENTRE PANTALLAS ==========
 btnComenzar.addEventListener("click", () => {
@@ -59,7 +81,6 @@ btnDificil.addEventListener("click", () => {
 });
 
 btnMenu.addEventListener("click", () => {
-    // Resetear juego y volver al inicio
     resetearJuego();
     pantallaJuego.classList.add("oculta");
     pantallaInicio.classList.remove("oculta");
@@ -68,7 +89,6 @@ btnMenu.addEventListener("click", () => {
 function iniciarModo(dificultad) {
     modo = dificultad;
 
-    // Mostrar el tablero correspondiente
     if (modo === "facil") {
         tableroFacil.classList.remove("oculta");
         tableroDificil.classList.add("oculta");
@@ -77,12 +97,11 @@ function iniciarModo(dificultad) {
         tableroDificil.classList.remove("oculta");
     }
 
-    // Cambiar de pantalla
     pantallaDificultad.classList.add("oculta");
     pantallaJuego.classList.remove("oculta");
 
-    // Preparar el juego
     resetearJuego();
+    cargarRecord();
     mensaje.textContent = "Pulsa EMPEZAR para jugar";
     botonEmpezar.disabled = false;
     botonEmpezar.textContent = "EMPEZAR";
@@ -99,7 +118,6 @@ botonEmpezar.addEventListener("click", () => {
     empezarJuego();
 });
 
-// Eventos de los botones de color (se asignan a ambos tableros)
 document.querySelectorAll(".boton, .boton-hex").forEach(boton => {
     boton.addEventListener("click", () => {
         if (!puedePulsar) return;
@@ -165,12 +183,10 @@ function mostrarSecuencia() {
 }
 
 function iluminar(color) {
-    // Buscar el botón correcto según el modo
     let boton;
     if (modo === "facil") {
         boton = document.getElementById(color);
     } else {
-        // En difícil algunos ids tienen sufijo 6
         if (color === "amarillo") boton = document.getElementById("amarillo6");
         else if (color === "azul") boton = document.getElementById("azul6");
         else if (color === "verde") boton = document.getElementById("verde6");
@@ -211,7 +227,12 @@ function comprobarRespuesta() {
     const posicion = secuenciaJugador.length - 1;
 
     if (secuenciaJugador[posicion] !== secuencia[posicion]) {
-        mensaje.textContent = "¡Fallaste! Ronda: " + ronda;
+        const esNuevoRecord = guardarRecordSiMejor(ronda);
+        if (esNuevoRecord) {
+            mensaje.textContent = "¡Nuevo récord! Ronda: " + ronda;
+        } else {
+            mensaje.textContent = "¡Fallaste! Ronda: " + ronda;
+        }
         botonEmpezar.disabled = false;
         botonEmpezar.textContent = "REINTENTAR";
         puedePulsar = false;
