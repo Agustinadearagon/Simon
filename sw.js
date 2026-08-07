@@ -1,28 +1,65 @@
-const CACHE_NAME = "simon-v5";
+const CACHE_NAME = "simon-v6";
 
+// Archivos principales del juego
+const FILES_TO_CACHE = [
+    "./",
+    "./index.html",
+    "./script.js",
+    "./styles.css",
+    "./manifest.json",
+    "./sw.js"
+];
+
+// Instalación
 self.addEventListener("install", (event) => {
     self.skipWaiting();
-});
 
-self.addEventListener("activate", (event) => {
     event.waitUntil(
-        caches.keys().then((nombres) => {
-            return Promise.all(
-                nombres.map((nombre) => {
-                    if (nombre !== CACHE_NAME) {
-                        return caches.delete(nombre);
-                    }
-                })
-            );
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(FILES_TO_CACHE);
         })
     );
-    self.clients.claim();
 });
 
+// Activación
+self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        caches.keys().then((keys) => {
+            return Promise.all(
+                keys
+                    .filter((key) => key !== CACHE_NAME)
+                    .map((key) => caches.delete(key))
+            );
+        }).then(() => self.clients.claim())
+    );
+});
+
+// Peticiones
 self.addEventListener("fetch", (event) => {
+
+    if (event.request.method !== "GET") {
+        return;
+    }
+
     event.respondWith(
-        fetch(event.request).catch(() => {
-            return caches.match(event.request);
-        })
+        fetch(event.request)
+            .then((response) => {
+
+                if (!response || response.status !== 200 || response.type !== "basic") {
+                    return response;
+                }
+
+                const responseClone = response.clone();
+
+                caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, responseClone);
+                });
+
+                return response;
+
+            })
+            .catch(() => {
+                return caches.match(event.request);
+            })
     );
 });
