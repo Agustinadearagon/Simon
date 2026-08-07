@@ -219,85 +219,58 @@ h1 {
     margin: 0 auto 30px;
     position: relative;
     border-radius: 50%;
-    background: #111;
+    background: #0d0d12;
     box-shadow: 
-        0 0 0 10px #1a1a2e,
-        0 0 0 14px #2a2a3e,
-        0 12px 40px rgba(0,0,0,0.7);
+        0 0 0 8px #1a1a2e,
+        0 0 0 12px #2a2a3e,
+        0 10px 35px rgba(0,0,0,0.7);
 }
 
+/* Cada botón se centra y se gira desde el centro del tablero */
 .boton-hex {
     position: absolute;
-    width: 30%;
-    height: 23%;
-    border-radius: 14px;
+    top: 50%;
+    left: 50%;
+    width: 78px;
+    height: 58px;
+    margin-left: -39px;
+    margin-top: -29px;
+    border-radius: 12px;
     cursor: pointer;
     transition: filter 0.15s, box-shadow 0.15s;
-    border: 3px solid rgba(0,0,0,0.35);
-    box-shadow: inset 0 -4px 8px rgba(0,0,0,0.3);
+    border: 3px solid rgba(0,0,0,0.4);
+    box-shadow: inset 0 -3px 6px rgba(0,0,0,0.35);
+    transform: rotate(var(--angulo)) translateY(-105px) rotate(calc(var(--angulo) * -1));
 }
 
 .boton-hex:active {
-    filter: brightness(0.9);
+    filter: brightness(0.88);
 }
 
 .boton-hex.activo {
-    filter: brightness(1.75);
-    box-shadow: 0 0 28px rgba(255,255,255,0.55), inset 0 -4px 8px rgba(0,0,0,0.2);
+    filter: brightness(1.8);
+    box-shadow: 0 0 26px rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.2);
 }
 
-/* Posiciones en círculo (6 segmentos estilo Super Simon) */
-.boton-hex.magenta {
-    background: #c51162;
-    top: 6%;
-    left: 6%;
-    transform: rotate(-35deg);
-}
-
-.boton-hex.amarillo {
-    background: #ffd600;
-    top: 3%;
-    left: 35%;
-}
-
-.boton-hex.azul {
-    background: #2962ff;
-    top: 6%;
-    right: 6%;
-    transform: rotate(35deg);
-}
-
-.boton-hex.verde {
-    background: #00c853;
-    bottom: 15%;
-    right: 6%;
-    transform: rotate(-35deg);
-}
-
-.boton-hex.naranja {
-    background: #ff6d00;
-    bottom: 4%;
-    left: 35%;
-}
-
-.boton-hex.morado {
-    background: #6200ea;
-    bottom: 15%;
-    left: 6%;
-    transform: rotate(35deg);
-}
+/* Ángulos cada 60° (empezando arriba = 0°) */
+.boton-hex.amarillo { background: #ffd600; --angulo: 0deg; }
+.boton-hex.azul     { background: #2962ff; --angulo: 60deg; }
+.boton-hex.verde    { background: #00c853; --angulo: 120deg; }
+.boton-hex.naranja  { background: #ff6d00; --angulo: 180deg; }
+.boton-hex.morado   { background: #6200ea; --angulo: 240deg; }
+.boton-hex.magenta  { background: #c51162; --angulo: 300deg; }
 
 .centro-hex {
     position: absolute;
-    width: 26%;
-    height: 26%;
+    width: 70px;
+    height: 70px;
     background: #0a0a0f;
     border-radius: 50%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     border: 5px solid #1a1a2e;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+    box-shadow: inset 0 0 18px rgba(0,0,0,0.9);
     z-index: 2;
     pointer-events: none;
 }
@@ -337,6 +310,17 @@ h1 {
     .tablero-hex {
         width: 270px;
         height: 270px;
+    }
+    .boton-hex {
+        width: 70px;
+        height: 52px;
+        margin-left: -35px;
+        margin-top: -26px;
+        transform: rotate(var(--angulo)) translateY(-94px) rotate(calc(var(--angulo) * -1));
+    }
+    .centro-hex {
+        width: 62px;
+        height: 62px;
     }
     .titulo-inicio {
         font-size: 2.6rem;
