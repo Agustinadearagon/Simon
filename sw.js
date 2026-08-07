@@ -1,12 +1,11 @@
-const CACHE_NAME = "simon-v7";
+const CACHE_NAME = "simon-v8";
 
 // Archivos principales del juego
 const FILES_TO_CACHE = [
     "./",
     "./index.html",
     "./script.js",
-    "./styles.css",
-    "./manifest.json",
+    "./style.css",
     "./sw.js"
 ];
 
