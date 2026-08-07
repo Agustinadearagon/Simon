@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- ========== PANTALLA DE INICIO (Instrucciones) ========== -->
+    <!-- ========== PANTALLA DE INICIO ========== -->
     <div id="pantalla-inicio" class="pantalla">
         <div class="container-inicio">
             <h1 class="titulo-inicio">SIMON</h1>
@@ -20,8 +20,8 @@
                     <li>El juego muestra una secuencia de colores con sonido.</li>
                     <li>Debes repetir la secuencia en el mismo orden.</li>
                     <li>Cada ronda añade un color más a la secuencia.</li>
-                    <li>Si fallas, se acaba la partida y verás tu puntuación.</li>
-                    <li>¡Intenta llegar lo más lejos posible!</li>
+                    <li>Si fallas, se acaba la partida.</li>
+                    <li>En modo difícil puedes jugar 2 jugadores: el que falle pierde.</li>
                 </ol>
             </div>
 
@@ -51,13 +51,39 @@
         </div>
     </div>
 
+    <!-- ========== PANTALLA DE JUGADORES (solo difícil) ========== -->
+    <div id="pantalla-jugadores" class="pantalla oculta">
+        <div class="container-inicio">
+            <h1 class="titulo-inicio">Jugadores</h1>
+            <p class="subtitulo">Modo Difícil · ¿Cuántos jugadores?</p>
+
+            <div class="opciones-dificultad">
+                <button id="btn-1jugador" class="btn-dificultad">
+                    <span class="modo-titulo">1 JUGADOR</span>
+                    <span class="modo-desc">Clásico · Récord personal</span>
+                </button>
+
+                <button id="btn-2jugadores" class="btn-dificultad btn-dificil">
+                    <span class="modo-titulo">2 JUGADORES</span>
+                    <span class="modo-desc">Por turnos · El que falle pierde</span>
+                </button>
+            </div>
+
+            <button id="btn-volver-jugadores" class="btn-secundario">← Volver</button>
+        </div>
+    </div>
+
     <!-- ========== PANTALLA DE JUEGO ========== -->
     <div id="pantalla-juego" class="pantalla oculta">
         <div class="container">
             <h1>SIMON</h1>
             
             <div class="info">
-                <p>Ronda: <span id="ronda">0</span> · Récord: <span id="record">0</span></p>
+                <p>
+                    <span id="texto-turno" class="oculta">Turno: <span id="jugador-actual">1</span> · </span>
+                    Ronda: <span id="ronda">0</span>
+                    <span id="texto-record"> · Récord: <span id="record">0</span></span>
+                </p>
                 <p id="mensaje">Pulsa EMPEZAR para jugar</p>
             </div>
 
@@ -69,7 +95,7 @@
                 <div class="boton azul" id="azul" data-color="azul"></div>
             </div>
 
-            <!-- Tablero 6 colores (Difícil) - estilo Super Simon -->
+            <!-- Tablero 6 colores (Difícil) -->
             <div id="tablero-dificil" class="tablero-hex oculta">
                 <div class="boton-hex magenta" id="magenta" data-color="magenta"></div>
                 <div class="boton-hex amarillo" id="amarillo6" data-color="amarillo"></div>
