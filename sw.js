@@ -1,6 +1,5 @@
 const CACHE_NAME = "simon-v8";
 
-// Archivos principales del juego
 const FILES_TO_CACHE = [
     "./",
     "./index.html",
@@ -9,7 +8,6 @@ const FILES_TO_CACHE = [
     "./sw.js"
 ];
 
-// Instalación
 self.addEventListener("install", (event) => {
     self.skipWaiting();
 
@@ -20,7 +18,6 @@ self.addEventListener("install", (event) => {
     );
 });
 
-// Activación
 self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys().then((keys) => {
@@ -33,7 +30,6 @@ self.addEventListener("activate", (event) => {
     );
 });
 
-// Peticiones
 self.addEventListener("fetch", (event) => {
 
     if (event.request.method !== "GET") {
